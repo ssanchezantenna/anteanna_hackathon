@@ -25,6 +25,8 @@ env/
 models/*.joblib
 models/*.pkl
 !models/.gitkeep
+dbt_project/models/*.joblib
+dbt_project/models/*.pkl
 
 # dbt
 dbt_project/target/
