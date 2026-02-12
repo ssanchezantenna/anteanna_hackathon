@@ -56,9 +56,15 @@ class EnsemblePredictor:
     # --------------------------------------------------------------------- #
 
     def _build_empirical_vector(
-        self, service: str
+        self, service: str, month: int | None = None
     ) -> tuple[np.ndarray, list[str]]:
         """Build a probability vector aligned to the TitleEncoder classes.
+
+        Args:
+            service: Target streaming service.
+            month: Optional signup month (1--12) for time-aware lookup.
+                When provided the monthly popularity distribution is used
+                (falling back to global if the month is unavailable).
 
         Returns:
             Tuple of ``(prob_vector, title_list)`` where *prob_vector* has
@@ -69,7 +75,7 @@ class EnsemblePredictor:
         idx_to_title = self.title_encoder.idx_to_title.get(service, {})
         title_to_idx = self.title_encoder.title_to_idx.get(service, {})
 
-        empirical_dist = self.baseline.predict(service)
+        empirical_dist = self.baseline.predict(service, month=month)
 
         title_list = [
             idx_to_title.get(i, OTHER_BUCKET) for i in range(num_classes)
@@ -106,6 +112,7 @@ class EnsemblePredictor:
         alpha: float = SMOOTHING_ALPHA,
         temperature: float = TEMPERATURE,
         top_k: int = 10,
+        signup_month: int | None = None,
     ) -> pd.DataFrame:
         """Generate blended title-probability predictions.
 
@@ -118,6 +125,9 @@ class EnsemblePredictor:
                 1 = baseline only).
             temperature: Temperature scaling applied to classifier logits.
             top_k: Number of top titles to return per subscriber.
+            signup_month: Optional signup month (1--12).  When provided the
+                time-windowed popularity distribution for that month is
+                used as the empirical baseline component.
 
         Returns:
             DataFrame with columns ``[title, probability, rank]`` for each
@@ -127,7 +137,9 @@ class EnsemblePredictor:
         has_classifier = service in self.classifiers
 
         # --- popularity vector (shared across all subscribers) ---------------
-        empirical_vec, title_list = self._build_empirical_vector(service)
+        empirical_vec, title_list = self._build_empirical_vector(
+            service, month=signup_month
+        )
 
         # --- classifier probabilities ----------------------------------------
         if has_classifier:

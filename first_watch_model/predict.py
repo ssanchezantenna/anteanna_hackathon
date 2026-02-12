@@ -21,7 +21,7 @@ from first_watch_model.config import (
     TEMPERATURE,
 )
 from first_watch_model.ensemble import EnsemblePredictor
-from first_watch_model.features import UNKNOWN_CATEGORY
+from first_watch_model.features import UNKNOWN_CATEGORY, derive_signup_date_features
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +84,10 @@ def predict_from_df(
             columns are optional -- missing ones are filled with defaults.
             If a ``subscriber_id`` column is present it is propagated to
             the output; otherwise positional indices are used.
+            If a ``signup_date`` column is present, temporal features
+            (``signup_month``, ``signup_day_of_week``,
+            ``signup_week_of_year``) are derived automatically and the
+            month-specific popularity baseline is used.
         model: Pre-loaded :class:`EnsemblePredictor`.  When *None* the
             model is loaded from disk automatically.
         top_k: Number of top predictions per subscriber.
@@ -98,14 +102,34 @@ def predict_from_df(
         model = load_model()
 
     work = df.copy()
+
+    # Derive temporal features from signup_date when available
+    work = derive_signup_date_features(work)
+
     work = _fill_defaults(work)
 
     has_subscriber_id = "subscriber_id" in work.columns
 
+    # Determine signup_month per row (0 means unknown)
+    has_signup_month = "signup_month" in work.columns
+
     all_results: list[pd.DataFrame] = []
 
-    for service, group in work.groupby("service"):
-        service = str(service)
+    # Group by (service, signup_month) so each group gets its own
+    # time-specific popularity baseline.
+    if has_signup_month:
+        group_cols = ["service", "signup_month"]
+    else:
+        group_cols = ["service"]
+
+    for group_key, group in work.groupby(group_cols):
+        if has_signup_month:
+            service, signup_month_val = str(group_key[0]), int(group_key[1])
+            signup_month = signup_month_val if signup_month_val > 0 else None
+        else:
+            service = str(group_key) if isinstance(group_key, str) else str(group_key[0])
+            signup_month = None
+
         features_df = group.reset_index(drop=True)
 
         preds = model.predict(
@@ -114,6 +138,7 @@ def predict_from_df(
             alpha=alpha,
             temperature=temperature,
             top_k=top_k,
+            signup_month=signup_month,
         )
 
         # Ensure row_index column exists for the join below

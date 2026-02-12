@@ -208,6 +208,46 @@ def _extract_metrics(
 # -----------------------------------------------------------------------
 
 
+def _build_baseline_matrix(
+    svc_df: pd.DataFrame,
+    service: str,
+    ensemble: EnsemblePredictor,
+    n_classes: int,
+) -> np.ndarray:
+    """Build a per-subscriber baseline probability matrix.
+
+    When ``signup_month`` is available in *svc_df*, each subscriber gets
+    the month-specific empirical vector.  Otherwise a single global
+    vector is tiled across all subscribers.
+
+    Returns:
+        Array of shape ``(len(svc_df), n_classes)``.
+    """
+    has_month = "signup_month" in svc_df.columns
+
+    if not has_month:
+        vec = ensemble._build_empirical_vector(service)[0]
+        return np.tile(vec, (len(svc_df), 1))
+
+    # Build one empirical vector per unique month, then assemble per row
+    months = svc_df["signup_month"].values
+    unique_months = set(int(m) for m in months if pd.notna(m) and int(m) > 0)
+    unique_months.add(0)  # fallback for unknown months
+
+    cache: dict[int, np.ndarray] = {}
+    for m in unique_months:
+        month_arg = m if m > 0 else None
+        cache[m] = ensemble._build_empirical_vector(service, month=month_arg)[0]
+
+    matrix = np.zeros((len(svc_df), n_classes), dtype=np.float64)
+    for i, m in enumerate(months):
+        m_int = int(m) if pd.notna(m) and int(m) > 0 else 0
+        vec = cache.get(m_int, cache[0])
+        matrix[i, :len(vec)] = vec
+
+    return matrix
+
+
 def evaluate_service(
     service: str,
     test_df: pd.DataFrame,
@@ -244,9 +284,10 @@ def evaluate_service(
 
     results: dict[str, dict[str, float]] = {}
 
-    # --- 1. Baseline-only (pure popularity) ---------------------------------
-    baseline_vec = ensemble._build_empirical_vector(service)[0]
-    baseline_matrix = np.tile(baseline_vec, (len(svc_df), 1))
+    # --- 1. Baseline-only (pure popularity, time-aware) ---------------------
+    baseline_matrix = _build_baseline_matrix(
+        svc_df, service, ensemble, n_classes
+    )
     results["baseline"] = _extract_metrics(
         baseline_matrix, idx_to_title, title_to_idx, true_titles
     )
@@ -272,7 +313,7 @@ def evaluate_service(
         # No classifier -- classifier variant equals baseline
         results["classifier"] = results["baseline"].copy()
 
-    # --- 3. Ensemble (blended) ----------------------------------------------
+    # --- 3. Ensemble (blended with time-aware baseline) ---------------------
     if service in ensemble.classifiers:
         ensemble_proba = (
             (1.0 - SMOOTHING_ALPHA) * clf_proba

@@ -18,6 +18,51 @@ OTHER_BUCKET: str = "__OTHER__"
 UNKNOWN_CATEGORY: str = "__UNKNOWN__"
 
 
+def derive_signup_date_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Derive temporal features from a ``signup_date`` column.
+
+    Extracts ``signup_month``, ``signup_day_of_week``, and
+    ``signup_week_of_year`` using conventions consistent with BigQuery:
+
+    - ``signup_day_of_week``: 1 = Sunday, 7 = Saturday (BQ DAYOFWEEK).
+    - ``signup_month``: 1--12.
+    - ``signup_week_of_year``: ISO week number 1--53.
+
+    If ``signup_date`` is not present in *df* the DataFrame is returned
+    unchanged.  Columns that already exist are **not** overwritten, so
+    dbt-computed values from training data are preserved.
+
+    Args:
+        df: Input DataFrame, potentially containing a ``signup_date``
+            column (string or datetime).
+
+    Returns:
+        DataFrame with the three temporal columns added (or unchanged).
+    """
+    if "signup_date" not in df.columns:
+        return df
+
+    work = df.copy()
+    dt = pd.to_datetime(work["signup_date"], errors="coerce")
+
+    if "signup_month" not in work.columns:
+        work["signup_month"] = dt.dt.month.fillna(0).astype(int)
+
+    if "signup_day_of_week" not in work.columns:
+        # Python: Monday=0..Sunday=6  ->  BQ: Sunday=1..Saturday=7
+        py_dow = dt.dt.dayofweek  # 0=Mon .. 6=Sun
+        work["signup_day_of_week"] = (
+            ((py_dow + 1) % 7 + 1).fillna(0).astype(int)
+        )
+
+    if "signup_week_of_year" not in work.columns:
+        work["signup_week_of_year"] = (
+            dt.dt.isocalendar().week.fillna(0).astype(int)
+        )
+
+    return work
+
+
 class TitleEncoder:
     """Maps titles to integer codes per service.
 

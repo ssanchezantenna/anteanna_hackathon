@@ -46,6 +46,10 @@ def load_training_data(split: str | None = None) -> pd.DataFrame:
     else:
         df = client.query(query).to_dataframe()
 
+    # dbt mart uses "target_service"; downstream Python expects "service"
+    if "target_service" in df.columns and "service" not in df.columns:
+        df = df.rename(columns={"target_service": "service"})
+
     return df
 
 
@@ -62,4 +66,9 @@ def load_title_popularity() -> pd.DataFrame:
 
     client = _get_client()
     df: pd.DataFrame = client.query(query).to_dataframe()
+
+    # dbt mart uses "target_service"; downstream Python expects "service"
+    if "target_service" in df.columns and "service" not in df.columns:
+        df = df.rename(columns={"target_service": "service"})
+
     return df

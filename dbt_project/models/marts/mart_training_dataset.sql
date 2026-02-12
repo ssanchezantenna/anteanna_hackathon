@@ -57,6 +57,13 @@ joined as (
         ve.first_ever_activity_at,
 
         -- =====================================================================
+        -- Signup date temporal features (derived from first_watch_date)
+        -- =====================================================================
+        extract(MONTH from ve.first_watch_date)   as signup_month,
+        extract(DAYOFWEEK from ve.first_watch_at) as signup_day_of_week,
+        extract(ISOWEEK from ve.first_watch_date) as signup_week_of_year,
+
+        -- =====================================================================
         -- Geographic features
         -- =====================================================================
         ve.city,

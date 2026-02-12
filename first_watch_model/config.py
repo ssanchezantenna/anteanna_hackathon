@@ -52,6 +52,10 @@ FEATURE_COLUMNS: list[str] = [
     "primetime_ratio",
     # Content preferences
     "avg_session_duration",
+    # Signup date temporal features
+    "signup_month",
+    "signup_day_of_week",
+    "signup_week_of_year",
 ]
 
 CATEGORICAL_FEATURES: list[str] = [
