@@ -21,7 +21,11 @@ from first_watch_model.config import (
     TEMPERATURE,
 )
 from first_watch_model.ensemble import EnsemblePredictor
-from first_watch_model.features import UNKNOWN_CATEGORY, derive_signup_date_features
+from first_watch_model.features import (
+    OTHER_BUCKET,
+    UNKNOWN_CATEGORY,
+    derive_signup_date_features,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -110,6 +114,13 @@ def predict_from_df(
 
     has_subscriber_id = "subscriber_id" in work.columns
 
+    # Assign stable original-row IDs before grouping so that each
+    # subscriber keeps a unique identifier even when groups are split.
+    if has_subscriber_id:
+        work["_orig_id"] = work["subscriber_id"].values
+    else:
+        work["_orig_id"] = range(len(work))
+
     # Determine signup_month per row (0 means unknown)
     has_signup_month = "signup_month" in work.columns
 
@@ -130,14 +141,17 @@ def predict_from_df(
             service = str(group_key) if isinstance(group_key, str) else str(group_key[0])
             signup_month = None
 
+        # Preserve original IDs before resetting the group index
+        orig_ids = group["_orig_id"].values
         features_df = group.reset_index(drop=True)
 
+        # Request extra predictions to compensate for filtering __OTHER__
         preds = model.predict(
             service=service,
             features_df=features_df,
             alpha=alpha,
             temperature=temperature,
-            top_k=top_k,
+            top_k=top_k + 1,
             signup_month=signup_month,
         )
 
@@ -145,15 +159,26 @@ def predict_from_df(
         if "row_index" not in preds.columns:
             preds["row_index"] = 0
 
+        # Filter out the __OTHER__ bucket -- not a real title
+        preds = preds[preds["title"] != OTHER_BUCKET].copy()
+
+        # Re-normalize probabilities and re-rank per subscriber
+        for row_idx in preds["row_index"].unique():
+            mask = preds["row_index"] == row_idx
+            total = preds.loc[mask, "probability"].sum()
+            if total > 0:
+                preds.loc[mask, "probability"] /= total
+            preds.loc[mask, "rank"] = range(1, mask.sum() + 1)
+
+        # Keep only top_k per subscriber
+        preds = preds[preds["rank"] <= top_k]
+
         preds["service"] = service
 
-        if has_subscriber_id:
-            row_ids = features_df["subscriber_id"].values
-            preds["subscriber_id"] = preds["row_index"].map(
-                lambda idx, ids=row_ids: ids[idx] if idx < len(ids) else idx
-            )
-        else:
-            preds["subscriber_id"] = preds["row_index"]
+        # Map row_index back to the original subscriber ID
+        preds["subscriber_id"] = preds["row_index"].map(
+            lambda idx, ids=orig_ids: ids[idx] if idx < len(ids) else idx
+        )
 
         all_results.append(preds)
 
@@ -164,6 +189,7 @@ def predict_from_df(
 
     result = pd.concat(all_results, ignore_index=True)
     result = result[["subscriber_id", "service", "rank", "title", "probability"]]
+    result["rank"] = result["rank"].astype(int)
     result = result.sort_values(
         ["subscriber_id", "service", "rank"]
     ).reset_index(drop=True)

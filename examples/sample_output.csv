@@ -1,51 +1,51 @@
 subscriber_id,service,rank,title,probability
-0,Netflix,1,Squid Game,0.082
-0,Netflix,2,Wednesday,0.068
-0,Netflix,3,The Night Agent,0.055
-0,Netflix,4,Stranger Things,0.049
-0,Netflix,5,Ginny & Georgia,0.041
-0,Netflix,6,Love Is Blind,0.038
-0,Netflix,7,You,0.035
-0,Netflix,8,Outer Banks,0.031
-0,Netflix,9,The Diplomat,0.028
-0,Netflix,10,Queen Charlotte,0.025
-1,Disney+,1,Bluey,0.095
-1,Disney+,2,Moana,0.071
-1,Disney+,3,Percy Jackson and the Olympians,0.058
-1,Disney+,4,The Mandalorian,0.052
-1,Disney+,5,Lilo & Stitch,0.044
-1,Disney+,6,Inside Out 2,0.039
-1,Disney+,7,Ahsoka,0.033
-1,Disney+,8,The Bear,0.030
-1,Disney+,9,Encanto,0.027
-1,Disney+,10,Frozen,0.024
-2,Max,1,The White Lotus,0.088
-2,Max,2,The Last of Us,0.072
-2,Max,3,House of the Dragon,0.061
-2,Max,4,Hacks,0.048
-2,Max,5,Somebody Somewhere,0.041
-2,Max,6,And Just Like That,0.036
-2,Max,7,True Detective,0.032
-2,Max,8,Succession,0.029
-2,Max,9,The Penguin,0.026
-2,Max,10,Dune,0.023
-3,Amazon Prime Video,1,Reacher,0.079
-3,Amazon Prime Video,2,The Boys,0.065
-3,Amazon Prime Video,3,Fallout,0.054
-3,Amazon Prime Video,4,Jack Ryan,0.047
-3,Amazon Prime Video,5,The Lord of the Rings: The Rings of Power,0.040
-3,Amazon Prime Video,6,Citadel,0.035
-3,Amazon Prime Video,7,The Marvelous Mrs. Maisel,0.031
-3,Amazon Prime Video,8,Invincible,0.028
-3,Amazon Prime Video,9,Upload,0.025
-3,Amazon Prime Video,10,Mr. & Mrs. Smith,0.022
-4,Apple TV+,1,Severance,0.098
-4,Apple TV+,2,Ted Lasso,0.082
-4,Apple TV+,3,Slow Horses,0.063
-4,Apple TV+,4,The Morning Show,0.051
-4,Apple TV+,5,Silo,0.044
-4,Apple TV+,6,Shrinking,0.037
-4,Apple TV+,7,Presumed Innocent,0.032
-4,Apple TV+,8,Monarch: Legacy of Monsters,0.028
-4,Apple TV+,9,For All Mankind,0.025
-4,Apple TV+,10,Foundation,0.022
+0,Netflix,1,A House of Dynamite,0.28492812651939275
+0,Netflix,2,Stranger Things,0.13700549888769617
+0,Netflix,3,KPop Demon Hunters,0.10111110602002847
+0,Netflix,4,Seinfeld,0.09366975680471161
+0,Netflix,5,Fire Country,0.09041030631144056
+0,Netflix,6,Young Sheldon,0.07828704652768537
+0,Netflix,7,A Different World,0.0589643291914765
+0,Netflix,8,The Conners,0.05627830403676948
+0,Netflix,9,The Beast in Me,0.05409075404395777
+0,Netflix,10,Ms. Rachel,0.04525477165684137
+1,Disney+,1,Ancient Aliens,0.8617741012698328
+1,Disney+,2,Fixer Upper,0.03617521406298876
+1,Disney+,3,World News Tonight with David Muir,0.03459043084305616
+1,Disney+,4,The Beatles Anthology,0.01567382199341108
+1,Disney+,5,Bluey,0.014510395070877
+1,Disney+,6,Zorro,0.009617928745713178
+1,Disney+,7,A Very Jonas Christmas Movie,0.007979105030844955
+1,Disney+,8,Murdaugh: Death in the Family,0.0066888288815853195
+1,Disney+,9,The Simpsons,0.006598018236096988
+1,Disney+,10,Home Alone,0.006392155865593901
+2,Max,1,The Big Bang Theory,0.9273548720870933
+2,Max,2,Friends,0.01673653140483675
+2,Max,3,Young Sheldon,0.010105688430442922
+2,Max,4,The Pitt,0.009913980385264868
+2,Max,5,Bob Hearts Abishola,0.008332132718367889
+2,Max,6,IT: Welcome to Derry,0.007875929081446853
+2,Max,7,Cold Case,0.006106474076220545
+2,Max,8,Elf,0.004965452395561868
+2,Max,9,Sesame Street,0.004569221596303487
+2,Max,10,Vlad & Niki,0.004039717824461432
+3,Amazon Prime Video,1,The Polar Express,0.27049840175606665
+3,Amazon Prime Video,2,Judy Justice,0.10854637283416732
+3,Amazon Prime Video,3,Magnum P.I.,0.106032626630151
+3,Amazon Prime Video,4,Tribunal Justice,0.09063975030415562
+3,Amazon Prime Video,5,9-1-1,0.08231499872774284
+3,Amazon Prime Video,6,Blue Bloods,0.07421760232154295
+3,Amazon Prime Video,7,Beast Games,0.06947097609210891
+3,Amazon Prime Video,8,The Big Bang Theory,0.06856375638369318
+3,Amazon Prime Video,9,Chicago Fire,0.06659974167931218
+3,Amazon Prime Video,10,Chicago P.D.,0.06311577327105938
+4,Apple TV+,1,A Charlie Brown Thanksgiving,0.9036465818409304
+4,Apple TV+,2,Pluribus,0.03295927437723281
+4,Apple TV+,3,The Family Plan 2,0.016422698989019508
+4,Apple TV+,4,The Last Frontier,0.011086959194072479
+4,Apple TV+,5,The Morning Show,0.010945656993969136
+4,Apple TV+,6,Slow Horses,0.005609917199022106
+4,Apple TV+,7,Down Cemetery Road,0.005447525118306328
+4,Apple TV+,8,Ted Lasso,0.00510165107626233
+4,Apple TV+,9,Palm Royale,0.004481608586256628
+4,Apple TV+,10,A Charlie Brown Christmas,0.004298126624928411
