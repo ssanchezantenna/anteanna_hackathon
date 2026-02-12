@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: stg_streaming_viewership
+    description: >
+      Cleaned and enriched streaming viewership data from Samba TV.
+      Converts unix timestamps to TIMESTAMP, computes duration, flags target services,
+      and extracts temporal features. Filters out rows with null device/application
+      or non-positive duration.
+    columns:
+      - name: smba_id
+        description: Unique device identifier from Samba TV.
+
+      - name: application
+        description: Name of the streaming service or application.
+
+      - name: title
+        description: Title of the content being watched.
+
+      - name: content_type
+        description: Type of content (e.g., movie, series, sports).
+
+      - name: network
+        description: Network name; used to identify linear TV viewing.
+
+      - name: city
+        description: City where the device is located.
+
+      - name: postal_code
+        description: Postal code where the device is located.
+
+      - name: exposure_start_at
+        description: Session start time as a BigQuery TIMESTAMP (converted from unix epoch).
+
+      - name: exposure_end_at
+        description: Session end time as a BigQuery TIMESTAMP (converted from unix epoch).
+
+      - name: duration_seconds
+        description: Duration of the viewing session in seconds (end - start).
+
+      - name: is_target_service
+        description: >
+          Boolean flag indicating whether the application is one of the 8 target
+          streaming services (Netflix, Amazon Prime Video, Disney+, Max, Apple TV+,
+          Hulu, Peacock, Paramount+).
+
+      - name: exposure_date
+        description: Calendar date of the session start (DATE type).
+
+      - name: hour_of_day
+        description: Hour of the day (0-23) when the session started.
+
+      - name: day_of_week
+        description: >
+          Day of the week when the session started (1=Sunday through 7=Saturday,
+          BigQuery DAYOFWEEK convention).

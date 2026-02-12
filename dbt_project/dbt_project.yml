@@ -1,0 +1,22 @@
+name: 'first_watch'
+version: '1.0.0'
+config-version: 2
+
+profile: 'first_watch'
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  first_watch:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: ephemeral
+    marts:
+      +materialized: table

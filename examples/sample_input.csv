@@ -1,0 +1,6 @@
+service,has_netflix,has_amazon,has_disney,has_max,has_apple_tv,has_hulu,has_peacock,has_paramount,has_linear,active_days_30d,total_duration_30d,distinct_titles_30d,total_sessions_30d,distinct_services_30d,avg_hour_of_day,stddev_hour_of_day,weekend_ratio,primetime_ratio,dominant_content_type,avg_session_duration,city
+Netflix,0,1,1,0,0,0,0,0,1,22,54000,18,45,3,20.5,2.1,0.35,0.62,series,1200,New York
+Disney+,1,1,0,0,1,0,0,0,0,15,32000,12,28,3,18.0,3.4,0.55,0.48,movie,1143,Los Angeles
+Max,1,0,0,0,0,1,0,0,1,25,68000,22,60,3,21.0,1.8,0.30,0.70,series,1133,Chicago
+Amazon Prime Video,0,0,1,1,0,0,1,0,0,10,18000,8,15,3,19.5,4.0,0.42,0.55,movie,1200,Houston
+Apple TV+,1,1,1,0,0,0,0,1,1,28,72000,25,70,5,20.0,2.5,0.38,0.65,series,1029,San Francisco

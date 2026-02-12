@@ -1,0 +1,51 @@
+subscriber_id,service,rank,title,probability
+0,Netflix,1,Squid Game,0.082
+0,Netflix,2,Wednesday,0.068
+0,Netflix,3,The Night Agent,0.055
+0,Netflix,4,Stranger Things,0.049
+0,Netflix,5,Ginny & Georgia,0.041
+0,Netflix,6,Love Is Blind,0.038
+0,Netflix,7,You,0.035
+0,Netflix,8,Outer Banks,0.031
+0,Netflix,9,The Diplomat,0.028
+0,Netflix,10,Queen Charlotte,0.025
+1,Disney+,1,Bluey,0.095
+1,Disney+,2,Moana,0.071
+1,Disney+,3,Percy Jackson and the Olympians,0.058
+1,Disney+,4,The Mandalorian,0.052
+1,Disney+,5,Lilo & Stitch,0.044
+1,Disney+,6,Inside Out 2,0.039
+1,Disney+,7,Ahsoka,0.033
+1,Disney+,8,The Bear,0.030
+1,Disney+,9,Encanto,0.027
+1,Disney+,10,Frozen,0.024
+2,Max,1,The White Lotus,0.088
+2,Max,2,The Last of Us,0.072
+2,Max,3,House of the Dragon,0.061
+2,Max,4,Hacks,0.048
+2,Max,5,Somebody Somewhere,0.041
+2,Max,6,And Just Like That,0.036
+2,Max,7,True Detective,0.032
+2,Max,8,Succession,0.029
+2,Max,9,The Penguin,0.026
+2,Max,10,Dune,0.023
+3,Amazon Prime Video,1,Reacher,0.079
+3,Amazon Prime Video,2,The Boys,0.065
+3,Amazon Prime Video,3,Fallout,0.054
+3,Amazon Prime Video,4,Jack Ryan,0.047
+3,Amazon Prime Video,5,The Lord of the Rings: The Rings of Power,0.040
+3,Amazon Prime Video,6,Citadel,0.035
+3,Amazon Prime Video,7,The Marvelous Mrs. Maisel,0.031
+3,Amazon Prime Video,8,Invincible,0.028
+3,Amazon Prime Video,9,Upload,0.025
+3,Amazon Prime Video,10,Mr. & Mrs. Smith,0.022
+4,Apple TV+,1,Severance,0.098
+4,Apple TV+,2,Ted Lasso,0.082
+4,Apple TV+,3,Slow Horses,0.063
+4,Apple TV+,4,The Morning Show,0.051
+4,Apple TV+,5,Silo,0.044
+4,Apple TV+,6,Shrinking,0.037
+4,Apple TV+,7,Presumed Innocent,0.032
+4,Apple TV+,8,Monarch: Legacy of Monsters,0.028
+4,Apple TV+,9,For All Mankind,0.025
+4,Apple TV+,10,Foundation,0.022

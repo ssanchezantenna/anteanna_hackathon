@@ -1,0 +1,11 @@
+first_watch:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: antenna-reporting
+      dataset: dbt_first_watch
+      threads: 4
+      timeout_seconds: 3600
+      location: US

@@ -1,0 +1,141 @@
+version: 2
+
+models:
+  - name: int_sessions_filtered
+    description: >
+      Filtered viewership sessions with duration greater than 60 seconds.
+      Materialized as a date-partitioned table on exposure_date for efficient
+      downstream joins during feature engineering.
+    columns:
+      - name: smba_id
+        description: Unique device identifier.
+      - name: application
+        description: Streaming service or application name.
+      - name: exposure_date
+        description: Calendar date of the session start (partition key).
+      - name: duration_seconds
+        description: Duration of the viewing session in seconds.
+      - name: is_target_service
+        description: Whether the application is one of the 8 target streaming services.
+
+  - name: int_device_service_first_session
+    description: >
+      Earliest session per (smba_id, target_service) pair. Identifies the first
+      time a device watched content on each target streaming service.
+    columns:
+      - name: smba_id
+        description: Unique device identifier.
+      - name: target_service
+        description: Name of the target streaming service.
+      - name: first_watch_title
+        description: Title of the content in the first viewing session on this service.
+      - name: first_watch_content_type
+        description: Content type of the first viewing session (movie, series, etc.).
+      - name: city
+        description: City of the device at time of first watch.
+      - name: postal_code
+        description: Postal code of the device at time of first watch.
+      - name: first_watch_at
+        description: Timestamp of the first viewing session on this service.
+      - name: first_watch_date
+        description: Calendar date of the first viewing session on this service.
+      - name: duration_seconds
+        description: Duration of the first viewing session in seconds.
+      - name: hour_of_day
+        description: Hour of day when the first viewing session started.
+      - name: day_of_week
+        description: Day of week when the first viewing session started.
+
+  - name: int_device_first_ever_activity
+    description: >
+      Earliest viewing session per device across ALL sources (not just target
+      services). Used to ensure first-watch events have prior viewing history.
+    columns:
+      - name: smba_id
+        description: Unique device identifier.
+      - name: first_ever_activity_at
+        description: Timestamp of the device's earliest viewing session across all sources.
+
+  - name: int_valid_first_watch_events
+    description: >
+      First-watch events that pass two validation filters:
+      (1) the first watch on the target service occurred after the device's
+      first-ever activity, and (2) the first watch date is on or after 2025-11-01.
+    columns:
+      - name: smba_id
+        description: Unique device identifier.
+      - name: target_service
+        description: Name of the target streaming service.
+      - name: first_watch_title
+        description: Title of the first content watched on this service.
+      - name: first_watch_content_type
+        description: Content type of the first content watched.
+      - name: city
+        description: City of the device.
+      - name: postal_code
+        description: Postal code of the device.
+      - name: first_watch_at
+        description: Timestamp of the first watch on this service.
+      - name: first_watch_date
+        description: Calendar date of the first watch.
+      - name: duration_seconds
+        description: Duration of the first viewing session in seconds.
+      - name: hour_of_day
+        description: Hour of day of the first viewing session.
+      - name: day_of_week
+        description: Day of week of the first viewing session.
+      - name: first_ever_activity_at
+        description: Timestamp of the device's first-ever activity across all sources.
+
+  - name: int_device_prior_features
+    description: >
+      Behavioral features computed from the 30-day window of viewing activity
+      prior to each valid first-watch event. Includes service flags, activity
+      metrics, service diversity, temporal patterns, and content preferences.
+    columns:
+      - name: smba_id
+        description: Unique device identifier.
+      - name: target_service
+        description: Target service for which this is the first-watch event.
+      - name: first_watch_at
+        description: Timestamp of the first watch (join key to valid events).
+      - name: has_netflix
+        description: "1 if device watched Netflix in prior 30 days, 0 otherwise."
+      - name: has_amazon
+        description: "1 if device watched Amazon Prime Video in prior 30 days, 0 otherwise."
+      - name: has_disney
+        description: "1 if device watched Disney+ in prior 30 days, 0 otherwise."
+      - name: has_max
+        description: "1 if device watched Max in prior 30 days, 0 otherwise."
+      - name: has_apple_tv
+        description: "1 if device watched Apple TV+ in prior 30 days, 0 otherwise."
+      - name: has_hulu
+        description: "1 if device watched Hulu in prior 30 days, 0 otherwise."
+      - name: has_peacock
+        description: "1 if device watched Peacock in prior 30 days, 0 otherwise."
+      - name: has_paramount
+        description: "1 if device watched Paramount+ in prior 30 days, 0 otherwise."
+      - name: has_linear
+        description: "1 if device watched non-streaming (linear) content in prior 30 days, 0 otherwise."
+      - name: active_days_30d
+        description: Number of distinct days with viewing activity in the prior 30 days.
+      - name: total_duration_30d
+        description: Total viewing duration in seconds across the prior 30 days.
+      - name: distinct_titles_30d
+        description: Number of distinct titles watched in the prior 30 days.
+      - name: total_sessions_30d
+        description: Total number of viewing sessions in the prior 30 days.
+      - name: distinct_services_30d
+        description: Number of distinct streaming services/apps used in the prior 30 days.
+      - name: avg_hour_of_day
+        description: Average hour of day across sessions in the prior 30 days.
+      - name: stddev_hour_of_day
+        description: Standard deviation of hour of day across sessions in the prior 30 days.
+      - name: weekend_ratio
+        description: Fraction of prior 30-day sessions occurring on weekends (Sat/Sun).
+      - name: primetime_ratio
+        description: Fraction of prior 30-day sessions occurring during primetime (7-11 PM).
+      - name: dominant_content_type
+        description: Most frequently watched content type in the prior 30 days.
+      - name: avg_session_duration
+        description: Average session duration in seconds across the prior 30 days.

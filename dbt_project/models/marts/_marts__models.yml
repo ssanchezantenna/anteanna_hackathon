@@ -1,0 +1,101 @@
+version: 2
+
+models:
+  - name: mart_training_dataset
+    description: >
+      Final training dataset for the "first watch" prediction model. Each row
+      represents a validated first-watch event on a target streaming service,
+      enriched with 30-day prior behavioral features, geographic context, and
+      a train/test split column. Partitioned by first_watch_date.
+    columns:
+      - name: smba_id
+        description: Unique device identifier.
+      - name: target_service
+        description: The streaming service the device adopted (prediction target / label).
+      - name: first_watch_title
+        description: Title of the content in the device's first session on this service.
+      - name: first_watch_content_type
+        description: Content type of the first session (movie, series, etc.).
+      - name: first_watch_at
+        description: Timestamp of the first viewing session on this service.
+      - name: first_watch_date
+        description: Calendar date of the first watch (partition key and split boundary).
+      - name: first_watch_duration_seconds
+        description: Duration of the first viewing session in seconds.
+      - name: first_watch_hour_of_day
+        description: Hour of day when the first watch occurred.
+      - name: first_watch_day_of_week
+        description: Day of week when the first watch occurred.
+      - name: first_ever_activity_at
+        description: Timestamp of the device's earliest activity across all sources.
+      - name: city
+        description: City of the device (geographic feature).
+      - name: postal_code
+        description: Postal code of the device (geographic feature).
+      - name: has_netflix
+        description: "1 if the device used Netflix in the 30 days prior to first watch."
+      - name: has_amazon
+        description: "1 if the device used Amazon Prime Video in the 30 days prior."
+      - name: has_disney
+        description: "1 if the device used Disney+ in the 30 days prior."
+      - name: has_max
+        description: "1 if the device used Max in the 30 days prior."
+      - name: has_apple_tv
+        description: "1 if the device used Apple TV+ in the 30 days prior."
+      - name: has_hulu
+        description: "1 if the device used Hulu in the 30 days prior."
+      - name: has_peacock
+        description: "1 if the device used Peacock in the 30 days prior."
+      - name: has_paramount
+        description: "1 if the device used Paramount+ in the 30 days prior."
+      - name: has_linear
+        description: "1 if the device watched linear (non-streaming) content in the 30 days prior."
+      - name: active_days_30d
+        description: Distinct days with viewing activity in the 30 days prior to first watch.
+      - name: total_duration_30d
+        description: Total viewing duration in seconds in the 30 days prior to first watch.
+      - name: distinct_titles_30d
+        description: Distinct titles watched in the 30 days prior to first watch.
+      - name: total_sessions_30d
+        description: Total viewing sessions in the 30 days prior to first watch.
+      - name: distinct_services_30d
+        description: Distinct services/apps used in the 30 days prior to first watch.
+      - name: avg_hour_of_day
+        description: Average hour of day across prior 30-day sessions.
+      - name: stddev_hour_of_day
+        description: Standard deviation of hour of day across prior 30-day sessions.
+      - name: weekend_ratio
+        description: Fraction of prior 30-day sessions on weekends.
+      - name: primetime_ratio
+        description: Fraction of prior 30-day sessions during primetime (7-11 PM).
+      - name: dominant_content_type
+        description: Most frequently watched content type in the 30 days prior.
+      - name: avg_session_duration
+        description: Average session duration in seconds across the 30 days prior.
+      - name: data_split
+        description: >
+          Data split assignment: 'train' for first watches in Nov-Dec 2025,
+          'test' for first watches in Jan 2026 and beyond.
+
+  - name: mart_title_popularity
+    description: >
+      Empirical probability distribution P(title | service) computed from
+      validated first-watch events. Includes first-watch counts, empirical
+      probabilities, and popularity ranks per service.
+    columns:
+      - name: target_service
+        description: Name of the target streaming service.
+      - name: first_watch_title
+        description: Title of the content that was a device's first watch on this service.
+      - name: first_watch_count
+        description: Number of devices whose first watch on this service was this title.
+      - name: total_first_watches
+        description: Total number of first-watch events for this service.
+      - name: empirical_probability
+        description: >
+          P(title | service) -- the fraction of first-watch events on this service
+          that correspond to this title.
+      - name: popularity_rank
+        description: >
+          Rank of this title within the service by first-watch count
+          (1 = most popular first-watch title).

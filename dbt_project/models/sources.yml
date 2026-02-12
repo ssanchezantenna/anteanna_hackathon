@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: samba_tv
+    database: antenna-reporting
+    schema: samba_tv
+    tables:
+      - name: streaming_viewership_2_1_inc
+        description: >
+          Raw streaming viewership data from Samba TV.
+          Each row represents a viewing session with device, application, title, and timing info.
+          Date range: Oct 2025 - Jan 2026.
+        columns:
+          - name: smba_id
+            description: Unique device identifier
+          - name: application
+            description: Streaming service or app name
+          - name: city
+            description: City of the device
+          - name: content_type
+            description: Type of content (movie, series, etc.)
+          - name: title
+            description: Title of the content watched
+          - name: exposure_start_ts
+            description: Session start timestamp (unix)
+          - name: exposure_end_ts
+            description: Session end timestamp (unix)
+          - name: network
+            description: Network name (for linear TV identification)
+          - name: postal_code
+            description: Postal code of the device
